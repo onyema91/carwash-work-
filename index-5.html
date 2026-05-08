@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ABJ Carwash | Premium Auto Detailing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ═══ THEMES ═══ */
+:root {
+  --gold:#C9A84C; --gold-l:#E8C96A;
+  --bg:#0A0A0A; --bg2:#111111; --bg3:#1A1A1A; --bg4:#222222;
+  --fg:#FAFAFA; --fg2:rgba(250,250,250,0.7); --gray:#888;
+  --border:rgba(201,168,76,0.15); --border2:rgba(201,168,76,0.08);
+  --nav-bg:rgba(10,10,10,0.88);
+  --hero-grad:linear-gradient(135deg,#0A0A0A 0%,#0f0f0f 40%,#0d0b07 100%);
+  --tr:0.35s ease;
+}
+[data-theme="light"] {
+  --gold:#A07820; --gold-l:#C9A84C;
+  --bg:#F5F3EE; --bg2:#EDEAE3; --bg3:#E2DDD5; --bg4:#D8D2C8;
+  --fg:#111; --fg2:rgba(17,17,17,0.72); --gray:#666;
+  --border:rgba(160,120,32,0.2); --border2:rgba(160,120,32,0.1);
+  --nav-bg:rgba(245,243,238,0.92);
+  --hero-grad:linear-gradient(135deg,#F5F3EE 0%,#EDEAE3 60%,#f0ead8 100%);
+}
+[data-theme="blue"] {
+  --gold:#4DA8D9; --gold-l:#6AC9E8;
+  --bg:#060C14; --bg2:#0B1520; --bg3:#10192A; --bg4:#152236;
+  --fg:#EEF4FA; --fg2:rgba(238,244,250,0.72); --gray:#7A96B2;
+  --border:rgba(77,168,217,0.18); --border2:rgba(77,168,217,0.08);
+  --nav-bg:rgba(6,12,20,0.92);
+  --hero-grad:linear-gradient(135deg,#060C14 0%,#091220 50%,#060e1a 100%);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--fg);overflow-x:hidden;transition:background var(--tr),color var(--tr)}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
+
+/* ═══ NAVBAR ═══ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 60px;
+  background:var(--nav-bg);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:padding .3s,background var(--tr),border-color var(--tr);
+}
+nav.scrolled{padding:13px 60px}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:var(--gold);letter-spacing:2px;text-decoration:none}
+.nav-logo span{color:var(--fg);transition:color var(--tr)}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{color:var(--fg2);text-decoration:none;font-size:.82rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;transition:color .3s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{background:var(--gold)!important;color:var(--bg)!important;padding:10px 22px!important;border-radius:2px;font-weight:700!important}
+.nav-cta:hover{opacity:.85!important;transform:translateY(-1px)}
+
+/* ── Theme Switcher Pill (in navbar) ── */
+.theme-pill{
+  display:flex;align-items:center;gap:3px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:50px;padding:4px;
+  transition:background var(--tr),border-color var(--tr);
+}
+.t-btn{
+  background:none;border:none;cursor:pointer;
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;transition:background .25s,transform .2s;
+  position:relative;
+}
+.t-btn:hover{transform:scale(1.15)}
+.t-btn.on{background:var(--gold)}
+/* tooltip */
+.t-btn::after{
+  content:attr(data-tip);
+  position:absolute;bottom:-26px;left:50%;transform:translateX(-50%);
+  background:var(--bg4);color:var(--fg);font-size:.6rem;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:3px 8px;border-radius:4px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .2s;font-family:'DM Sans',sans-serif;
+}
+.t-btn:hover::after{opacity:1}
+
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:24px;height:2px;background:var(--gold);display:block;transition:all .3s}
+
+/* ═══ BACK TO TOP ═══ */
+#btt{
+  position:fixed;bottom:32px;right:32px;z-index:990;
+  width:48px;height:48px;border-radius:50%;
+  background:var(--gold);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 24px rgba(0,0,0,.4);
+  opacity:0;transform:translateY(16px);pointer-events:none;
+  transition:opacity .35s,transform .35s,background .25s;
+}
+#btt.show{opacity:1;transform:translateY(0);pointer-events:auto}
+#btt:hover{background:var(--gold-l);transform:translateY(-4px)}
+#btt svg{width:20px;height:20px;stroke:var(--bg);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:900px){#btt{bottom:76px;right:14px;width:42px;height:42px}}
+
+/* ═══ MOBILE MENU ═══ */
+#mob{display:none;position:fixed;inset:0;background:var(--bg);z-index:998;padding:100px 40px 40px;flex-direction:column;gap:26px;transition:background var(--tr)}
+#mob a{font-size:1.8rem;font-family:'Playfair Display',serif;color:var(--fg);text-decoration:none;transition:color .3s}
+#mob a:hover{color:var(--gold)}
+#mob .mc{font-size:.9rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--gold);color:var(--bg);padding:15px 30px;text-align:center;border-radius:2px;margin-top:auto}
+
+/* ═══ HERO ═══ */
+#hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:120px 60px 80px}
+.hbg{position:absolute;inset:0;background:var(--hero-grad);transition:background var(--tr)}
+.hbg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 50%,rgba(201,168,76,.07) 0%,transparent 70%)}
+.hlines{position:absolute;top:0;right:0;width:50%;height:100%;overflow:hidden;pointer-events:none}
+.hlines::before{content:'';position:absolute;right:-100px;top:-100px;width:600px;height:600px;border:1px solid var(--border2);border-radius:50%;animation:spin 30s linear infinite}
+.hlines::after{content:'';position:absolute;right:-50px;top:-50px;width:400px;height:400px;border:1px solid var(--border2);border-radius:50%;animation:spin 20s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hc{position:relative;z-index:2;max-width:700px}
+.badge{display:inline-flex;align-items:center;gap:10px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);padding:8px 20px;border-radius:50px;font-size:.75rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:26px;animation:up .8s ease both}
+.badge::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+h1.ht{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,6vw,5rem);font-weight:900;line-height:1.05;margin-bottom:20px;color:var(--fg);animation:up .8s .2s ease both;transition:color var(--tr)}
+h1.ht .g{color:var(--gold)}
+.hd{font-size:1.05rem;color:var(--fg2);line-height:1.8;max-width:520px;margin-bottom:34px;font-weight:300;animation:up .8s .4s ease both;transition:color var(--tr)}
+.hbtns{display:flex;gap:14px;flex-wrap:wrap;animation:up .8s .6s ease both;margin-bottom:52px}
+@keyframes up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.bp{background:var(--gold);color:var(--bg);padding:15px 34px;font-weight:700;font-size:.83rem;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;border-radius:2px;transition:all .3s;display:inline-block;border:2px solid var(--gold)}
+.bp:hover{background:transparent;color:var(--gold);transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,168,76,.2)}
+.bs{background:transparent;color:var(--fg);padding:15px 34px;font-weight:600;font-size:.83rem;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;border-radius:2px;border:2px solid var(--border);transition:all .3s;display:inline-block}
+.bs:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+.hstats{display:flex;gap:40px;flex-wrap:wrap;animation:up .8s .8s ease both}
+.si{border-left:2px solid var(--gold);padding-left:14px}
+.sn{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gold);line-height:1}
+.sl{font-size:.72rem;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+
+/* ═══ SHARED ═══ */
+.slbl{font-size:.68rem;letter-spacing:4px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px}
+.stit{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,2.9rem);font-weight:700;line-height:1.15;margin-bottom:12px;color:var(--fg);transition:color var(--tr)}
+.ssub{color:var(--gray);font-size:.95rem;line-height:1.7;font-weight:300;transition:color var(--tr)}
+.shd{text-align:center;max-width:600px;margin:0 auto 52px}
+
+/* ═══ QUOTE ═══ */
+#quote{background:var(--bg3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:80px 60px;transition:background var(--tr)}
+.qi{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.qf{display:flex;flex-direction:column;gap:15px}
+.fg{display:flex;flex-direction:column;gap:7px}
+.fg label{font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);font-weight:500}
+.fc{background:var(--bg4);border:1px solid var(--border);color:var(--fg);padding:12px 15px;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:.9rem;transition:border-color .3s,background var(--tr),color var(--tr);-webkit-appearance:none}
+.fc:focus{outline:none;border-color:var(--gold)}
+.fc option{background:var(--bg4)}
+.pd{background:var(--bg);border:1px solid var(--border);padding:18px 22px;border-radius:2px;display:flex;align-items:center;justify-content:space-between;transition:background var(--tr)}
+.pl{font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray)}
+.pa{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--gold)}
+
+/* ═══ TRUST ═══ */
+#trust{padding:60px;border-bottom:1px solid var(--border2)}
+.tg{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2px}
+.tc{background:var(--bg3);padding:34px 28px;border:1px solid var(--border2);transition:border-color .3s,background var(--tr)}
+.tc:hover{border-color:var(--border)}
+.ti{font-size:2rem;margin-bottom:12px}
+.tc h4{font-size:.98rem;font-weight:600;margin-bottom:8px;color:var(--fg);transition:color var(--tr)}
+.tc p{font-size:.84rem;color:var(--gray);line-height:1.65}
+
+/* ═══ COUNTERS ═══ */
+#counters{padding:56px 60px;background:var(--gold)}
+.cg{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:40px;text-align:center}
+.cn{font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--bg);line-height:1}
+.cl{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:rgba(10,10,10,.55);font-weight:600;margin-top:5px}
+
+/* ═══ SERVICES ═══ */
+#services{padding:100px 60px}
+.svg{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px}
+.sc{background:var(--bg3);border:1px solid var(--border2);padding:44px 32px;position:relative;overflow:hidden;transition:all .4s;cursor:default}
+.sc::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.sc:hover{border-color:var(--border);transform:translateY(-4px)}
+.sc:hover::before{transform:scaleX(1)}
+.sn2{font-family:'Playfair Display',serif;font-size:3.2rem;font-weight:900;color:var(--border2);line-height:1;margin-bottom:16px}
+.sic{font-size:1.8rem;margin-bottom:14px}
+.sc h3{font-size:1.05rem;font-weight:600;margin-bottom:10px;color:var(--fg);transition:color var(--tr)}
+.sc p{font-size:.86rem;color:var(--gray);line-height:1.7}
+
+/* ═══ PRICING ═══ */
+#pricing{padding:100px 60px;background:var(--bg3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);transition:background var(--tr)}
+.prg{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px}
+.prc{background:var(--bg);border:1px solid var(--border2);padding:42px 28px;position:relative;transition:all .3s}
+.prc.pop{border-color:var(--gold);transform:scale(1.03);background:var(--bg2)}
+.prc:hover{border-color:var(--border)}
+.pbadge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--bg);font-size:.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 16px;border-radius:50px;white-space:nowrap}
+.ptier{font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:12px}
+.pprice{font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;color:var(--fg);line-height:1;margin-bottom:4px;transition:color var(--tr)}
+.pprice span{font-size:1.2rem;vertical-align:super;color:var(--gold)}
+.pfrom{font-size:.73rem;color:var(--gray);margin-bottom:22px}
+.pfl{list-style:none;margin-bottom:26px;display:flex;flex-direction:column;gap:10px}
+.pfl li{font-size:.85rem;color:var(--fg2);display:flex;align-items:center;gap:10px;transition:color var(--tr)}
+.pfl li::before{content:'✦';color:var(--gold);font-size:.58rem;flex-shrink:0}
+.pdiv{height:1px;background:var(--border);margin-bottom:22px}
+.btp{display:block;width:100%;text-align:center;padding:13px;border-radius:2px;font-weight:700;font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:all .3s}
+.btpg{background:var(--gold);color:var(--bg);border:2px solid var(--gold)}
+.btpg:hover{background:transparent;color:var(--gold)}
+.btpo{background:transparent;color:var(--fg);border:2px solid var(--border)}
+.btpo:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ═══ ABOUT US ═══ */
+#about{padding:100px 60px;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);transition:background var(--tr)}
+.about-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about-img-wrap{position:relative}
+.about-img-main{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:2px;display:block}
+.about-img-badge{
+  position:absolute;bottom:-24px;right:-24px;
+  background:var(--gold);color:var(--bg);
+  padding:24px 28px;text-align:center;
+  border-radius:2px;
+}
+.about-img-badge .abn{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:900;line-height:1}
+.about-img-badge .abl{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-top:4px;opacity:.8}
+.about-img-accent{
+  position:absolute;top:-16px;left:-16px;
+  width:100px;height:100px;
+  border:2px solid var(--gold);
+  border-radius:2px;opacity:.3;pointer-events:none;
+}
+.about-text{display:flex;flex-direction:column;gap:20px}
+.about-text p{font-size:.95rem;color:var(--gray);line-height:1.85;font-weight:300;transition:color var(--tr)}
+.about-vals{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+.av{
+  background:var(--bg3);border:1px solid var(--border2);
+  padding:20px 18px;border-radius:2px;
+  transition:border-color .3s,background var(--tr);
+}
+.av:hover{border-color:var(--border)}
+.av-icon{font-size:1.4rem;margin-bottom:8px}
+.av h5{font-size:.88rem;font-weight:600;color:var(--fg);margin-bottom:4px;transition:color var(--tr)}
+.av p{font-size:.78rem;color:var(--gray);line-height:1.5;margin:0}
+.about-team{margin-top:8px}
+.about-team h4{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px}
+.team-faces{display:flex;gap:-8px}
+.tf{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--gold);color:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-family:'Playfair Display',serif;font-size:.95rem;
+  border:3px solid var(--bg2);margin-left:-10px;flex-shrink:0;
+  transition:transform .2s;cursor:default;
+}
+.tf:first-child{margin-left:0}
+.tf:hover{transform:translateY(-4px);z-index:1}
+.tf.more{background:var(--bg3);color:var(--gray);font-size:.75rem;font-family:'DM Sans',sans-serif;font-weight:600;border-color:var(--border)}
+.team-faces-wrap{display:flex;align-items:center;gap:14px}
+.team-note{font-size:.8rem;color:var(--gray);font-weight:300}
+
+@media(max-width:900px){
+  #about{padding:52px 18px}
+  .about-inner{grid-template-columns:1fr;gap:52px}
+  .about-img-badge{bottom:-16px;right:-8px;padding:16px 20px}
+  .about-img-badge .abn{font-size:2rem}
+  .about-img-accent{display:none}
+}
+
+/* ═══ GALLERY ═══ */
+#gallery{padding:100px 60px}
+.gg{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.bac{position:relative;overflow:hidden;aspect-ratio:4/3;background:var(--bg3)}
+.bac img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.bac:hover img{transform:scale(1.04)}
+.bao{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 55%)}
+.bals{position:absolute;bottom:16px;left:16px;right:16px;display:flex;justify-content:space-between}
+.bal{font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:2px}
+.bal.b{background:rgba(0,0,0,.7);color:var(--gray);border:1px solid rgba(255,255,255,.1)}
+.bal.a{background:var(--gold);color:var(--bg)}
+.bat{position:absolute;top:16px;left:16px;font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.5);background:rgba(0,0,0,.5);padding:4px 10px;border-radius:2px}
+
+/* ═══ REVIEWS ═══ */
+#reviews{padding:100px 60px;background:var(--bg3);border-top:1px solid var(--border);transition:background var(--tr)}
+.rvg{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px}
+.rvc{background:var(--bg);border:1px solid var(--border2);padding:32px 28px;transition:border-color .3s,background var(--tr)}
+.rvc:hover{border-color:var(--border)}
+.rvs{color:var(--gold);font-size:.84rem;letter-spacing:3px;margin-bottom:14px}
+.rvt{font-size:.89rem;color:var(--fg2);line-height:1.8;font-weight:300;margin-bottom:20px;font-style:italic;transition:color var(--tr)}
+.rvd{height:1px;background:var(--border2);margin-bottom:16px}
+.rvr{display:flex;align-items:center;gap:12px}
+.rva{width:40px;height:40px;border-radius:50%;background:var(--gold);color:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;font-family:'Playfair Display',serif;flex-shrink:0}
+.rvn{font-weight:600;font-size:.88rem;color:var(--fg);transition:color var(--tr)}
+.rvr2{font-size:.73rem;color:var(--gray)}
+
+/* ═══ CTA ═══ */
+#cta{padding:100px 60px;text-align:center;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:hidden;transition:background var(--tr)}
+#cta::before{content:'ABJ';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Playfair Display',serif;font-size:18vw;font-weight:900;color:var(--border2);pointer-events:none;user-select:none;white-space:nowrap}
+.ctac{position:relative;z-index:2;max-width:600px;margin:0 auto}
+.ctao{display:inline-block;background:rgba(201,168,76,.1);border:1px solid var(--border);color:var(--gold);font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;padding:7px 18px;border-radius:50px;margin-bottom:20px}
+.ctac p{color:var(--gray);margin-bottom:32px;line-height:1.7}
+.ctabtns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+/* ═══ FAQ ═══ */
+#faq{padding:100px 60px}
+.fqi{max-width:800px;margin:0 auto}
+.fi{border-bottom:1px solid var(--border2);padding:24px 0}
+.fq{display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:.98rem;font-weight:600;color:var(--fg);gap:18px;transition:color .3s;user-select:none}
+.fq:hover{color:var(--gold)}
+.ficon{font-size:1.2rem;color:var(--gold);flex-shrink:0;transition:transform .35s;line-height:1}
+.fi.open .ficon{transform:rotate(45deg)}
+.fa{font-size:.87rem;color:var(--gray);line-height:1.8;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease;font-weight:300}
+.fi.open .fa{max-height:200px;padding-top:13px}
+
+/* ═══ CONTACT ═══ */
+#contact{padding:100px 60px;background:var(--bg3);border-top:1px solid var(--border);transition:background var(--tr)}
+.coi{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1.5fr;gap:76px}
+.coinfo{display:flex;flex-direction:column;gap:26px}
+.coitem{display:flex;flex-direction:column;gap:5px}
+.colbl{font-size:.63rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:600}
+.coval{font-size:.92rem;color:var(--fg2);line-height:1.65;transition:color var(--tr)}
+.coval a{color:var(--fg2);text-decoration:none;transition:color .3s}
+.coval a:hover{color:var(--gold)}
+.codiv{height:1px;background:var(--border2)}
+.cof{display:flex;flex-direction:column;gap:15px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+textarea.fc{resize:vertical;min-height:110px}
+.subbtn{background:var(--gold);color:var(--bg);border:2px solid var(--gold);padding:14px 36px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px;cursor:pointer;transition:all .3s;align-self:flex-start}
+.subbtn:hover{background:transparent;color:var(--gold)}
+
+/* ═══ FOOTER ═══ */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:54px 60px 26px;transition:background var(--tr)}
+.ft{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:52px;max-width:1100px;margin:0 auto;padding-bottom:32px;border-bottom:1px solid var(--border2);margin-bottom:24px}
+.fb p{font-size:.83rem;color:var(--gray);line-height:1.7;margin-top:13px;font-weight:300;max-width:270px}
+.fcol h5{font-size:.67rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:16px}
+.fcol ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.fcol ul a{font-size:.83rem;color:var(--gray);text-decoration:none;transition:color .3s}
+.fcol ul a:hover{color:var(--fg)}
+.fbot{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:.76rem;color:var(--gray)}
+.fbot a{color:var(--gray);text-decoration:none;transition:color .3s}
+.fbot a:hover{color:var(--gold)}
+.flinks{display:flex;gap:20px}
+
+/* ═══ STICKY BAR ═══ */
+.stk{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:var(--bg3);border-top:1px solid var(--border);padding:10px 14px;justify-content:space-between;align-items:center;gap:8px;transition:background var(--tr)}
+.stk a{flex:1;text-align:center;padding:11px;font-weight:700;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;border-radius:2px;text-decoration:none}
+.stk .sc2{border:1px solid var(--border);color:var(--gold)}
+.stk .sb{background:var(--gold);color:var(--bg)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  nav{padding:14px 18px}
+  nav.scrolled{padding:11px 18px}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  #hero{padding:96px 18px 52px}
+  .hstats{gap:18px}
+  #quote{padding:52px 18px}
+  .qi{grid-template-columns:1fr;gap:32px}
+  #trust,#services,#pricing,#gallery,#reviews,#cta,#faq,#contact{padding:52px 18px}
+  #counters{padding:34px 18px}
+  .cg{grid-template-columns:repeat(2,1fr);gap:18px}
+  .gg{grid-template-columns:1fr}
+  .coi{grid-template-columns:1fr;gap:32px}
+  .fr{grid-template-columns:1fr}
+  .ft{grid-template-columns:1fr 1fr;gap:28px}
+  .fbot{flex-direction:column;text-align:center}
+  .stk{display:flex}
+  footer{padding-bottom:68px}
+  .prc.pop{transform:scale(1)}
+  #btt{bottom:72px;right:14px;width:42px;height:42px}
+}
+@media(max-width:480px){
+  .hbtns{flex-direction:column}
+  .ft{grid-template-columns:1fr}
+  .ctabtns{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ BACK TO TOP BUTTON ══ -->
+<button id="btt" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- ══ NAVBAR ══ -->
+<nav id="nav">
+  <a href="#" class="nav-logo">ABJ<span>Carwash</span></a>
+
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+
+    <!-- ── THEME TOGGLE PILL ── -->
+    <li>
+      <div class="theme-pill" aria-label="Switch theme">
+        <button class="t-btn on" data-theme="dark" data-tip="Dark">🌙</button>
+        <button class="t-btn"    data-theme="light" data-tip="Light">☀️</button>
+        <button class="t-btn"    data-theme="blue"  data-tip="Ocean">🌊</button>
+      </div>
+    </li>
+
+    <li><a href="#quote" class="nav-cta">Get Quote</a></li>
+  </ul>
+
+  <!-- Mobile: theme + hamburger -->
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="theme-pill" id="mtp">
+      <button class="t-btn on" data-theme="dark">🌙</button>
+      <button class="t-btn"    data-theme="light">☀️</button>
+      <button class="t-btn"    data-theme="blue">🌊</button>
+    </div>
+    <div class="hamburger" onclick="toggleMob()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mob">
+  <a href="#about"    onclick="toggleMob()">About</a>
+  <a href="#services" onclick="toggleMob()">Services</a>
+  <a href="#pricing"  onclick="toggleMob()">Pricing</a>
+  <a href="#gallery"  onclick="toggleMob()">Gallery</a>
+  <a href="#reviews"  onclick="toggleMob()">Reviews</a>
+  <a href="#contact"  onclick="toggleMob()">Contact</a>
+  <a href="#quote" onclick="toggleMob()" class="mc">Book a Wash</a>
+</div>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hbg"></div>
+  <div class="hlines"></div>
+  <div class="hc">
+    <div class="badge">Premium Auto Detailing</div>
+    <h1 class="ht">Your Car Deserves<br><span class="g">Nothing Less</span><br>Than Perfect.</h1>
+    <p class="hd">ABJ Carwash brings showroom-quality results to every vehicle. From express washes to full-service detailing — we treat your car like our own.</p>
+    <div class="hbtns">
+      <a href="#quote" class="bp">Get Free Quote</a>
+      <a href="tel:5551234567" class="bs">☎ Call Us Now</a>
+    </div>
+    <div class="hstats">
+      <div class="si"><div class="sn">8K+</div><div class="sl">Cars Washed</div></div>
+      <div class="si"><div class="sn">4.9★</div><div class="sl">Star Rating</div></div>
+      <div class="si"><div class="sn">100%</div><div class="sl">Satisfaction</div></div>
+      <div class="si"><div class="sn">300+</div><div class="sl">5-Star Reviews</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ QUOTE ══ -->
+<section id="quote">
+  <div class="qi">
+    <div>
+      <div class="slbl">Instant Quote</div>
+      <h2 class="stit">Get Your Price<br>in Seconds</h2>
+      <p class="ssub">Select your vehicle type and service level to see an estimated price instantly. No hidden fees, ever.</p>
+    </div>
+    <div class="qf">
+      <div class="fg"><label>Vehicle Type</label>
+        <select class="fc" id="vt" onchange="calc()">
+          <option value="sedan">Sedan / Coupe</option>
+          <option value="suv">SUV / Crossover</option>
+          <option value="truck">Truck / Van</option>
+          <option value="luxury">Luxury / Sports</option>
+        </select>
+      </div>
+      <div class="fg"><label>Service Package</label>
+        <select class="fc" id="st" onchange="calc()">
+          <option value="express">Express Wash</option>
+          <option value="full">Full Service Wash</option>
+          <option value="detail">Interior Detail</option>
+          <option value="premium">Premium Detail</option>
+        </select>
+      </div>
+      <div class="fg"><label>Frequency</label>
+        <select class="fc" id="fr" onchange="calc()">
+          <option value="once">One-Time</option>
+          <option value="weekly">Weekly (−15%)</option>
+          <option value="biweekly">Bi-Weekly (−10%)</option>
+          <option value="monthly">Monthly (−5%)</option>
+        </select>
+      </div>
+      <div class="pd"><div class="pl">Estimated Price</div><div class="pa" id="pd">$25</div></div>
+      <a href="#contact" class="bp" style="text-align:center">Book This Wash</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TRUST ══ -->
+<section id="trust">
+  <div class="tg">
+    <div class="tc"><div class="ti">🛡️</div><h4>Fully Insured</h4><p>Up to $1M liability coverage. Your vehicle is safe in our hands, guaranteed.</p></div>
+    <div class="tc"><div class="ti">✅</div><h4>Background Checked</h4><p>Every team member passes thorough background screening before joining ABJ.</p></div>
+    <div class="tc"><div class="ti">🌿</div><h4>Eco-Friendly Products</h4><p>Biodegradable, water-conserving products tough on dirt, gentle on Earth.</p></div>
+    <div class="tc"><div class="ti">💯</div><h4>Satisfaction Guaranteed</h4><p>Not satisfied? We'll re-do the service for free within 24 hours. No questions asked.</p></div>
+  </div>
+</section>
+
+<!-- ══ ABOUT US ══ -->
+<section id="about">
+  <div class="about-inner">
+    <!-- Image side -->
+    <div class="about-img-wrap">
+      <div class="about-img-accent"></div>
+      <img class="about-img-main" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=700&h=875&fit=crop&crop=face" alt="ABJ Carwash team"/>
+      <div class="about-img-badge">
+        <div class="abn">5+</div>
+        <div class="abl">Years of Excellence</div>
+      </div>
+    </div>
+    <!-- Text side -->
+    <div class="about-text">
+      <div class="slbl">About ABJ Carwash</div>
+      <h2 class="stit">Passionate About<br>Every Detail</h2>
+      <p>ABJ Carwash was founded with one simple belief — every car deserves to be treated with care and precision. What started as a small neighbourhood wash bay has grown into a trusted name in premium auto detailing, serving thousands of satisfied customers.</p>
+      <p>Our team of trained professionals use industry-leading techniques and eco-friendly products to deliver showroom-quality results every single time. We don't just clean cars — we restore pride in your vehicle.</p>
+
+      <div class="about-vals">
+        <div class="av"><div class="av-icon">🎯</div><h5>Our Mission</h5><p>Deliver exceptional results with honesty, care, and consistency.</p></div>
+        <div class="av"><div class="av-icon">🌱</div><h5>Eco-Conscious</h5><p>Water-saving methods and biodegradable products only.</p></div>
+        <div class="av"><div class="av-icon">🤝</div><h5>Community First</h5><p>Proudly local, giving back to the community we serve.</p></div>
+        <div class="av"><div class="av-icon">⭐</div><h5>Quality Driven</h5><p>Every vehicle leaves us looking and feeling brand new.</p></div>
+      </div>
+
+      <div class="about-team">
+        <h4>Meet the Team</h4>
+        <div class="team-faces-wrap">
+          <div class="team-faces">
+            <div class="tf" title="Amos - Founder">A</div>
+            <div class="tf" title="Bright - Head Detailer">B</div>
+            <div class="tf" title="Joyce - Operations">J</div>
+            <div class="tf" title="Kofi - Senior Technician">K</div>
+            <div class="tf more">+8</div>
+          </div>
+          <span class="team-note">12 dedicated professionals ready to serve you</span>
+        </div>
+      </div>
+
+      <div style="margin-top:8px">
+        <a href="#contact" class="bp">Work With Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ COUNTERS ══ -->
+<section id="counters">
+  <div class="cg">
+    <div><div class="cn" data-t="8000">0</div><div class="cl">Cars Washed</div></div>
+    <div><div class="cn" data-t="300">0</div><div class="cl">Five-Star Reviews</div></div>
+    <div><div class="cn" data-t="5">0</div><div class="cl">Years Experience</div></div>
+    <div><div class="cn" data-t="100">0</div><div class="cl">Satisfaction Rate %</div></div>
+  </div>
+</section>
+
+<!-- ══ SERVICES ══ -->
+<section id="services">
+  <div class="shd"><div class="slbl">Our Services</div><h2 class="stit">Every Service Your Car Needs</h2><p class="ssub">From a quick rinse to a full showroom detail — ABJ has the expertise and tools to handle it all.</p></div>
+  <div class="svg">
+    <div class="sc"><div class="sn2">01</div><div class="sic">💧</div><h3>Express Wash</h3><p>Quick exterior wash, rinse, and dry to keep your car looking great on any busy day.</p></div>
+    <div class="sc"><div class="sn2">02</div><div class="sic">✨</div><h3>Full Service Wash</h3><p>Exterior hand wash, interior vacuum, windows, and wipe-down for a complete refresh.</p></div>
+    <div class="sc"><div class="sn2">03</div><div class="sic">🧹</div><h3>Interior Detail</h3><p>Deep clean of seats, carpets, dashboard, and every crevice — leaving the cabin spotless.</p></div>
+    <div class="sc"><div class="sn2">04</div><div class="sic">🏆</div><h3>Premium Detail</h3><p>Our signature service: full interior + exterior, clay bar treatment, polish and wax.</p></div>
+    <div class="sc"><div class="sn2">05</div><div class="sic">🔆</div><h3>Paint Correction</h3><p>Remove swirls, scratches, and oxidation — restore your paint's original depth and gloss.</p></div>
+    <div class="sc"><div class="sn2">06</div><div class="sic">🛻</div><h3>Fleet Washing</h3><p>Flexible schedules tailored to keep your business fleet clean and professional at all times.</p></div>
+  </div>
+</section>
+
+<!-- ══ PRICING ══ -->
+<section id="pricing">
+  <div class="shd"><div class="slbl">Packages</div><h2 class="stit">Choose Your Clean</h2><p class="ssub">Transparent pricing with no hidden fees. Every package includes our satisfaction guarantee.</p></div>
+  <div class="prg">
+    <div class="prc">
+      <div class="ptier">Express</div><div class="pprice"><span>$</span>25</div><div class="pfrom">Starting at / sedan</div>
+      <div class="pdiv"></div>
+      <ul class="pfl"><li>Exterior hand wash</li><li>Rinse & hand dry</li><li>Window clean</li><li>Tire shine</li><li>Air freshener</li></ul>
+      <a href="#contact" class="btp btpo">Book Express</a>
+    </div>
+    <div class="prc pop">
+      <div class="pbadge">Most Popular</div>
+      <div class="ptier">Full Service</div><div class="pprice"><span>$</span>65</div><div class="pfrom">Starting at / sedan</div>
+      <div class="pdiv"></div>
+      <ul class="pfl"><li>Everything in Express</li><li>Interior vacuum</li><li>Dashboard wipe-down</li><li>Door jamb cleaning</li><li>Seat wipe (vinyl/leather)</li><li>Deodorizer treatment</li></ul>
+      <a href="#contact" class="btp btpg">Book Full Service</a>
+    </div>
+    <div class="prc">
+      <div class="ptier">Premium Detail</div><div class="pprice"><span>$</span>149</div><div class="pfrom">Starting at / sedan</div>
+      <div class="pdiv"></div>
+      <ul class="pfl"><li>Everything in Full Service</li><li>Clay bar treatment</li><li>Hand wax & polish</li><li>Carpet shampoo</li><li>Engine bay clean</li><li>Headlight restoration</li></ul>
+      <a href="#contact" class="btp btpo">Book Detail</a>
+    </div>
+    <div class="prc">
+      <div class="ptier">Fleet / Commercial</div><div class="pprice" style="font-size:2rem">Custom</div><div class="pfrom">Tailored to your fleet</div>
+      <div class="pdiv"></div>
+      <ul class="pfl"><li>Custom cleaning schedule</li><li>Volume discounts</li><li>On-site service available</li><li>Dedicated account manager</li><li>Priority booking</li><li>Monthly invoicing</li></ul>
+      <a href="#contact" class="btp btpo">Get Quote</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ GALLERY ══ -->
+<section id="gallery">
+  <div class="shd"><div class="slbl">Results</div><h2 class="stit">See the Difference</h2><p class="ssub">Real results from our detailing professionals that showcase the ABJ quality standard.</p></div>
+  <div class="gg">
+    <div class="bac"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop" alt="Exterior"/><div class="bao"></div><div class="bat">Exterior Detail</div><div class="bals"><span class="bal b">Before</span><span class="bal a">After</span></div></div>
+    <div class="bac"><img src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?w=800&h=600&fit=crop" alt="Interior"/><div class="bao"></div><div class="bat">Interior Detail</div><div class="bals"><span class="bal b">Before</span><span class="bal a">After</span></div></div>
+    <div class="bac"><img src="https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=800&h=600&fit=crop" alt="Paint"/><div class="bao"></div><div class="bat">Paint Correction</div><div class="bals"><span class="bal b">Before</span><span class="bal a">After</span></div></div>
+    <div class="bac"><img src="https://images.unsplash.com/photo-1621963553891-3d8011a0ea03?w=800&h=600&fit=crop" alt="Wheels"/><div class="bao"></div><div class="bat">Wheel & Tyre Detail</div><div class="bals"><span class="bal b">Before</span><span class="bal a">After</span></div></div>
+  </div>
+</section>
+
+<!-- ══ REVIEWS ══ -->
+<section id="reviews">
+  <div class="shd"><div class="slbl">Client Reviews</div><h2 class="stit">What Our Clients Say</h2><p class="ssub">Hear from real customers about their ABJ Carwash experience.</p></div>
+  <div class="rvg">
+    <div class="rvc"><div class="rvs">★★★★★</div><p class="rvt">"ABJ took my 5-year-old SUV and made it look like it just rolled off the showroom floor. The interior detail was absolutely unreal. I've tried many carwashes — none come close."</p><div class="rvd"></div><div class="rvr"><div class="rva">K</div><div><div class="rvn">Kwame Asante</div><div class="rvr2">SUV Owner · Regular Client</div></div></div></div>
+    <div class="rvc"><div class="rvs">★★★★★</div><p class="rvt">"Fast, professional, and thorough. I brought in my BMW with water spots all over the paint and they completely removed them. The team clearly takes pride in their work."</p><div class="rvd"></div><div class="rvr"><div class="rva">A</div><div><div class="rvn">Amina Mensah</div><div class="rvr2">BMW Owner · 1 year</div></div></div></div>
+    <div class="rvc"><div class="rvs">★★★★★</div><p class="rvt">"I run a small delivery company with 4 vans. ABJ set us up with a bi-weekly fleet schedule at a great price. Highly recommend for anyone with a business vehicle."</p><div class="rvd"></div><div class="rvr"><div class="rva">J</div><div><div class="rvn">James Osei</div><div class="rvr2">Fleet Client · Business Owner</div></div></div></div>
+    <div class="rvc"><div class="rvs">★★★★★</div><p class="rvt">"Booked the premium detail for my wife's car as a gift. She was blown away. The leather conditioning alone made it feel brand new inside. Worth every penny."</p><div class="rvd"></div><div class="rvr"><div class="rva">E</div><div><div class="rvn">Emmanuel Boateng</div><div class="rvr2">Sedan Owner</div></div></div></div>
+    <div class="rvc"><div class="rvs">★★★★★</div><p class="rvt">"The paint correction service removed scratches I thought were permanent. My car looks better now than the day I bought it. Genuinely impressed."</p><div class="rvd"></div><div class="rvr"><div class="rva">F</div><div><div class="rvn">Fatima Al-Hassan</div><div class="rvr2">Paint Correction Client</div></div></div></div>
+    <div class="rvc"><div class="rvs">★★★★★</div><p class="rvt">"They always show up on time, do an excellent job, and the team is super friendly. My car is on a monthly schedule — it's the best money I spend all month."</p><div class="rvd"></div><div class="rvr"><div class="rva">D</div><div><div class="rvn">David Nkrumah</div><div class="rvr2">Monthly Subscriber · 2 years</div></div></div></div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<section id="cta">
+  <div class="ctac">
+    <div class="ctao">🎉 First-Time Customers Get 20% Off</div>
+    <h2 class="stit">Ready for a Spotless Car?</h2>
+    <p>Book your wash today and experience the ABJ difference. First-time customers receive 20% off their initial service.</p>
+    <div class="ctabtns"><a href="#quote" class="bp">Get Free Quote</a><a href="tel:5551234567" class="bs">☎ Call Now</a></div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══ -->
+<section id="faq">
+  <div class="shd"><div class="slbl">FAQ</div><h2 class="stit">Frequently Asked Questions</h2></div>
+  <div class="fqi">
+    <div class="fi"><div class="fq" onclick="faq(this)">How long does a full detail take?<span class="ficon">+</span></div><div class="fa">A full service wash typically takes 45–90 minutes. A premium detail can take 3–5 hours depending on the vehicle size and condition. We always provide a time estimate before we begin.</div></div>
+    <div class="fi"><div class="fq" onclick="faq(this)">Do you offer mobile / on-site carwash?<span class="ficon">+</span></div><div class="fa">Yes! We offer mobile detailing for premium and fleet packages. Our team will come to your home, office, or any location that suits you. Contact us for availability and pricing.</div></div>
+    <div class="fi"><div class="fq" onclick="faq(this)">What products do you use?<span class="ficon">+</span></div><div class="fa">We use eco-friendly, biodegradable cleaning products and pH-neutral shampoos that are tough on dirt but gentle on your vehicle's paint, trim, and environment.</div></div>
+    <div class="fi"><div class="fq" onclick="faq(this)">Are you insured?<span class="ficon">+</span></div><div class="fa">Absolutely. ABJ Carwash carries full liability insurance and all team members are bonded. Every staff member passes a thorough background check before joining our team.</div></div>
+    <div class="fi"><div class="fq" onclick="faq(this)">Can I reschedule or cancel a booking?<span class="ficon">+</span></div><div class="fa">Yes. We ask for at least 24 hours notice for rescheduling or cancellations at no charge. Changes made within 24 hours may incur a small fee. You can reschedule by calling us or via WhatsApp.</div></div>
+    <div class="fi"><div class="fq" onclick="faq(this)">What if I'm not satisfied with the result?<span class="ficon">+</span></div><div class="fa">We offer a 100% satisfaction guarantee. If you're not completely happy with your service, contact us within 24 hours and we'll re-clean your vehicle at no additional cost.</div></div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+  <div class="shd"><div class="slbl">Get in Touch</div><h2 class="stit">Book Your Wash</h2><p class="ssub">Ready for a cleaner car? Fill out the form and we'll be in touch within the hour.</p></div>
+  <div class="coi">
+    <div class="coinfo">
+      <div class="coitem"><div class="colbl">📍 Visit Us</div><div class="coval">123 ABJ Drive<br>Your City, State</div></div>
+      <div class="codiv"></div>
+      <div class="coitem"><div class="colbl">📞 Call Us</div><div class="coval"><a href="tel:5551234567">(555) 123-4567</a></div></div>
+      <div class="codiv"></div>
+      <div class="coitem"><div class="colbl">✉ Email Us</div><div class="coval"><a href="mailto:hello@abjcarwash.com">hello@abjcarwash.com</a></div></div>
+      <div class="codiv"></div>
+      <div class="coitem"><div class="colbl">🕐 Opening Hours</div><div class="coval">Mon – Fri: 7:00 AM – 7:00 PM<br>Saturday: 8:00 AM – 6:00 PM<br>Sunday: 9:00 AM – 4:00 PM</div></div>
+    </div>
+    <div class="cof">
+      <div class="fr">
+        <div class="fg"><label>Full Name</label><input type="text" class="fc" placeholder="John Doe"/></div>
+        <div class="fg"><label>Phone Number</label><input type="tel" class="fc" placeholder="+1 (555) 000-0000"/></div>
+      </div>
+      <div class="fg"><label>Email Address</label><input type="email" class="fc" placeholder="you@example.com"/></div>
+      <div class="fr">
+        <div class="fg"><label>Service Needed</label>
+          <select class="fc"><option>Select a service</option><option>Express Wash</option><option>Full Service Wash</option><option>Interior Detail</option><option>Premium Detail</option><option>Paint Correction</option><option>Fleet Washing</option></select>
+        </div>
+        <div class="fg"><label>Preferred Date</label><input type="date" class="fc"/></div>
+      </div>
+      <div class="fg"><label>Message / Notes</label><textarea class="fc" placeholder="Tell us about your vehicle or any special requirements..."></textarea></div>
+      <button class="subbtn" onclick="submit(event)">Book My Wash</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="ft">
+    <div class="fb">
+      <a href="#" class="nav-logo">ABJ<span>Carwash</span></a>
+      <p>Premium auto detailing for homes, businesses, and fleets. Insured, bonded, and eco-friendly — because your car deserves the best.</p>
+    </div>
+    <div class="fcol"><h5>Services</h5><ul><li><a href="#services">Express Wash</a></li><li><a href="#services">Full Service</a></li><li><a href="#services">Interior Detail</a></li><li><a href="#services">Premium Detail</a></li><li><a href="#services">Fleet Washing</a></li></ul></div>
+    <div class="fcol"><h5>Company</h5><ul><li><a href="#trust">About Us</a></li><li><a href="#reviews">Reviews</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#faq">FAQ</a></li><li><a href="#contact">Careers</a></li></ul></div>
+    <div class="fcol"><h5>Contact</h5><ul><li><a href="#">123 ABJ Drive, Your City</a></li><li><a href="tel:5551234567">(555) 123-4567</a></li><li><a href="mailto:hello@abjcarwash.com">hello@abjcarwash.com</a></li><li><a href="#">Mon–Fri 7AM–7PM</a></li></ul></div>
+  </div>
+  <div class="fbot">
+    <div>© 2026 ABJ Carwash. All rights reserved.</div>
+    <div class="flinks"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+  </div>
+</footer>
+
+<!-- ══ STICKY MOBILE CTA ══ -->
+<div class="stk">
+  <a href="tel:5551234567" class="sc2">☎ Call Now</a>
+  <a href="#quote" class="sb">Book a Wash</a>
+</div>
+
+<script>
+/* ── NAVBAR SCROLL ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50);
+  document.getElementById('btt').classList.toggle('show',window.scrollY>400);
+});
+
+/* ── MOBILE MENU ── */
+function toggleMob(){
+  const m=document.getElementById('mob');
+  m.style.display=m.style.display==='flex'?'none':'flex';
+}
+
+/* ── THEME SWITCHER ── */
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  document.querySelectorAll('.t-btn').forEach(b=>b.classList.toggle('on',b.dataset.theme===t));
+  try{localStorage.setItem('abj-theme',t)}catch(e){}
+}
+document.querySelectorAll('.t-btn').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.theme)));
+try{const s=localStorage.getItem('abj-theme');if(s)setTheme(s);}catch(e){}
+
+/* ── QUOTE CALCULATOR ── */
+const P={express:{sedan:25,suv:35,truck:40,luxury:45},full:{sedan:65,suv:85,truck:95,luxury:110},detail:{sedan:99,suv:125,truck:140,luxury:160},premium:{sedan:149,suv:189,truck:215,luxury:249}};
+const D={once:1,weekly:.85,biweekly:.90,monthly:.95};
+function calc(){
+  const v=document.getElementById('vt').value,s=document.getElementById('st').value,f=document.getElementById('fr').value;
+  document.getElementById('pd').textContent='$'+Math.round(P[s][v]*D[f]);
+}
+
+/* ── COUNTER ANIMATION ── */
+let done=false;
+new IntersectionObserver(e=>{
+  if(e[0].isIntersecting&&!done){
+    done=true;
+    document.querySelectorAll('.cn').forEach(el=>{
+      const max=+el.dataset.t;let n=0;
+      const t=setInterval(()=>{n=Math.min(n+Math.ceil(max/60),max);el.textContent=n.toLocaleString();if(n>=max)clearInterval(t);},25);
+    });
+  }
+},{threshold:.5}).observe(document.getElementById('counters'));
+
+/* ── FAQ ── */
+function faq(el){
+  const i=el.parentElement,was=i.classList.contains('open');
+  document.querySelectorAll('.fi').forEach(x=>x.classList.remove('open'));
+  if(!was)i.classList.add('open');
+}
+
+/* ── FORM ── */
+function submit(e){
+  e.preventDefault();const b=e.target;
+  b.textContent='✓ Booking Received!';b.style.background='#2a6e2a';b.style.borderColor='#2a6e2a';b.style.color='#fff';
+  setTimeout(()=>{b.textContent='Book My Wash';b.style.background='';b.style.borderColor='';b.style.color='';},3000);
+}
+
+/* ── SCROLL REVEAL ── */
+const ro=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform=e.target.classList.contains('pop')?'scale(1.03)':'translateY(0)'}}),{threshold:.08});
+document.querySelectorAll('.sc,.prc,.rvc,.tc,.bac').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(18px)';el.style.transition='opacity .5s ease,transform .5s ease';ro.observe(el);});
+</script>
+</body>
+</html>
